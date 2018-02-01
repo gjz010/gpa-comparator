@@ -1,0 +1,23 @@
+{
+  "name": "gpa-comparator",
+  "version": "1.0.0",
+  "description": "Compare your GPA without anyone knowing it!",
+  "main": "index.js",
+  "dependencies": {
+    "async-merge-sort": "^0.1.3",
+    "express": "^4.16.2",
+    "node-rsa": "^0.4.2",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "secure",
+    "computing"
+  ],
+  "author": "gjz010",
+  "license": "ISC"
+}
