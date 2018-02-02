@@ -1,13 +1,54 @@
 <html>
 <head>
 <title>GPA Comparator</title>
-<script type="text/javascript" src="./comparator_browser.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/comparator-browser.js"></script>
 <script type="text/javascript">
-
-
-
+    var cmp=require("comparator");
+    $(document).ready(function(){
+        var socket=io();
+        socket.on("gc change top",function(data){
+            console.log(data);
+            $("#greatest").text(data.name||"* But nobody came");
+        })
+        var key=cmp.generateKeys();
+        var gpa=0;
+        var last_x;
+        socket.on("compare requestpubkey",function(){
+            socket.emit("compare sendpubkey",cmp.exportPublicKey(key));
+        })
+        socket.on("compare requestc",function(data){
+            var obj=cmp.generateC(data,gpa);
+            last_x=obj.x;
+            var c=obj.c;
+            socket.emit("compare sendc",c);
+        })
+        socket.on("compare requestarr",function(data){
+            var arr=cmp.listAllX(key,data,65537,gpa);
+            socket.emit("compare sendarr",arr);
+        });
+        socket.on("compare requestresult",function(data){
+            socket.emit("compare sendresult",{"result":cmp.check(last_x,65537,data,gpa)});
+        });
+        $("#login").on("click",function(){
+            gpa=Number($("#gpa").val());
+            socket.emit("gc login",{"name":$("#name").val()})
+            $("#form").hide();
+        });
+    })
 </script>
 </head>
-<body></body>
+<body>
+<h1>GPA Comparator</h1>
+<p>Current highest GPA owner:</p>
+<p id="greatest">But nobody came.</p>
+<div id="form">
+<p>Compare your GPA without anyone knowing your accurate GPA!</p>
+<p>Your name:<input type="text" id="name"></input></p>
+<p>Your GPA(0-400):<input type="text" id="gpa"></input></p>
+<button id="login">Start</button>
+</div>
+</body>
 
 </html>

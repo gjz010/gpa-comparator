@@ -87,6 +87,7 @@ function test(){
     var arr=stageTwo(key,c,65537,i);
     var result=stageThree(x,65537,arr,j)
     console.log("i>=j: "+result)
+    return ((i>=j)==(result))
 }
 
 
